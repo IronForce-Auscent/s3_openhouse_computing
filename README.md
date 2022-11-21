@@ -1,1 +1,1 @@
-# s3_openhouse_computing
+# Demo scripts to use during Peirce Open House 2023
