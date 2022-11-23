@@ -1,78 +1,53 @@
-alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
-key = ""
-encrypted_alphabet = []
+class VingenereCipher:
 
-def generate_encrypted_alphabet(a_plain):
-  """
-  Generates a shifted version of the alphabet
+  def __init__(self, case_sensitive: bool=False, alphabet: str="ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
+    self.case_sensitive = case_sensitive
+    self.ALPHABET = alphabet
 
-  Status: Completed
-  Remarks: More optimisation required to make code more readable and run faster(?)
-  """
-  global encryted_alphabet
-  encrypted_alphabet = []
-  a_index = lambda d: alphabet.index(d) if d.isalpha() else d
-  for x in range(26):
-    if not a_plain.isalpha():
-      encrypted_alphabet.append(a_plain)
-    elif (x + a_index) > 25:
-      encrypted_alphabet.append(alphabet[(a_index + x) - 26])
-    else:
-      encrypted_alphabet.append(alphabet[(a_index + x)])
-      # print(alphabet[(a_index + x)])
-  print(encrypted_alphabet)
-  return encrypted_alphabet
+  def _generate_key_string(self, text: str, key: str) -> str:
+    """
+    Checks if the key is of the same length as the text, if not, extend it
+    """
+    if len(text) > len(key):
+      key = key * (len(text)//len(key)+1)
+    return key
 
+  def encrypt(self, text: str, key: str) -> str:
+    """
+    Encrypts the text by the given key
+    """
+    for k in key:
+      k = k if self.case_sensitive else k.upper()
+      if k not in self.ALPHABET:
+        raise ValueError("All characters in key must be valid")
+    key = self._generate_key_string(text, key)
+    ciphertext = ""
+    for m, k in zip(text, key):
+      m, k = (m, k) if self.case_sensitive else (m.upper(), k.upper()) # I have never done this before but it works so
+      if m not in self.ALPHABET:
+        ciphertext += m
+      else: # Formula is C[i] = (M[i]+K[i]) mod 26
+        ciphertext += self.ALPHABET[
+          (self.ALPHABET.index(m)+self.ALPHABET.index(k)) % len(self.ALPHABET)
+        ]
+    return ciphertext
 
-def check_key(plaintext, key):
-  """
-  Checks if the key is of the same length as the plaintext, and if it is not, extends the key such that its length is the same as the plaintext's
-
-  Status: Completed
-  Remarks: N/A (as of now)
-  """
-  new_key = ""
-  k_index = 0
-  while len(plaintext) > len(new_key):
-    if (k_index + 1) == len(key):
-      new_key += key[k_index]
-      k_index = 0
-    else:
-      new_key += key[k_index]
-      k_index += 1
-  print(new_key)
-  return new_key
-
-
-def encrypt(plaintext, key):
-  """
-  Encrypts the plaintext by the given key, and returns it. 
-
-  Status: Completed
-  Remarks: More testing with different types of plaintext and keys are required to ensure that the code works well
-  """
-  global alphabet
-  plaintext_breakdown = [plaintext[i] for i in range(len(plaintext))]
-  print(plaintext_breakdown)
-  encrypted_string = ""
-  encrypted_alphabet = []
-  extended_key = check_key(plaintext, key)
-  for x in range(len(plaintext)):
-    encrypted_alphabet = generate_encrypted_alphabet(plaintext_breakdown[x].upper())
-    print(encrypted_alphabet)
-    if plaintext_breakdown[x].islower():
-      encrypted_string += encrypted_alphabet[alphabet.index(extended_key[x].upper())].lower()
-    elif plaintext_breakdown[x].isupper():
-      encrypted_string += encrypted_alphabet[alphabet.index(extended_key[x].upper())].upper()
-    else:
-      encrypted_string += plaintext_breakdown[x]
-
-  return encrypted_string
-
-def decrypt(plaintext, key):
-  """
-  Decrypts a plaintext using the given key
-
-  Status: Work in Progress
-  Remarks: N/A (as of now)
-  """
+  def decrypt(self, text: str, key: str) -> str:
+    """
+    Decrypts the text using the given key
+    """
+    for k in key:
+      k = k if self.case_sensitive else k.upper()
+      if k not in self.ALPHABET:
+        raise ValueError("All characters in key must be valid")
+    key = self._generate_key_string(text, key)
+    ciphertext = ""
+    for c, k in zip(text, key):
+      c, k = (c, k) if self.case_sensitive else (c.upper(), k.upper()) # I have never done this before but it works so
+      if c not in self.ALPHABET:
+        ciphertext += c
+      else: # Formula is M[i] = (C[i]-K[i]) mod 26
+        ciphertext += self.ALPHABET[
+          (self.ALPHABET.index(c)-self.ALPHABET.index(k)) % len(self.ALPHABET)
+        ]
+    return ciphertext
