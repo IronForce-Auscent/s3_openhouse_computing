@@ -2,15 +2,23 @@ class VingenereCipher:
 
   def __init__(self, case_sensitive: bool=False, alphabet: str="ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
     self.case_sensitive = case_sensitive
-    self.ALPHABET = alphabet
+    self.ALPHABET = alphabet if self.case_sensitive else alphabet.upper()
 
   def _generate_key_string(self, text: str, key: str) -> str:
     """
-    Checks if the key is of the same length as the text, if not, extend it
+    Generates the key string to use with the given text
     """
-    if len(text) > len(key):
-      key = key * (len(text)//len(key)+1)
-    return key
+    new_key = ""
+    i = 0 # Gasp! nooo why are you adding a counter for a for loop?! Well simply put I'm too lazy
+    for c in text:
+      c = c if self.case_sensitive else c.upper()
+      if c in self.ALPHABET:
+        new_key += key[(i+1)%len(key)-1]
+        i += 1
+      else:
+        new_key += " "
+    return new_key
+
 
   def encrypt(self, text: str, key: str) -> str:
     """
@@ -51,3 +59,5 @@ class VingenereCipher:
           (self.ALPHABET.index(c)-self.ALPHABET.index(k)) % len(self.ALPHABET)
         ]
     return ciphertext
+
+print(VingenereCipher()._generate_key_string("Hello World", "Test"))
