@@ -7,18 +7,18 @@ def generate_encrypted_alphabet(a_plain):
   Generates a shifted version of the alphabet
 
   Status: Completed
-  Remarks: More optimisation required to make code more readable and run faster(?)
+  Remarks: Being rewritten to have better readability (seriously, what the hell was I smoking when I wrote this...)
   """
   global encryted_alphabet
   encrypted_alphabet = []
   a_index = lambda d: alphabet.index(d) if d.isalpha() else d
   for x in range(26):
-    if not a_plain.isalpha():
+    if not a_plain[x].isalpha():
       encrypted_alphabet.append(a_plain)
-    elif (x + a_index) > 25:
-      encrypted_alphabet.append(alphabet[(a_index + x) - 26])
+    elif (x + a_index(a_plain[x])) > 25:
+      encrypted_alphabet.append(alphabet[(a_index(a_plain[x]) + x) - 26])
     else:
-      encrypted_alphabet.append(alphabet[(a_index + x)])
+      encrypted_alphabet.append(alphabet[(a_index(a_plain[x]) + x)])
       # print(alphabet[(a_index + x)])
   print(encrypted_alphabet)
   return encrypted_alphabet
