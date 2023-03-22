@@ -1,7 +1,7 @@
 class VigenereCipher():
     def __init__(self):
-        self.lower_alphabet = "abcdefghijklmnopqrstuvwxyz"
-        self.upper_alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        # self.lower_alphabet = "abcdefghijklmnopqrstuvwxyz"
+        self.alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         self.key = ""
     
     def check_encrypt_key(self, plaintext, key):
@@ -29,4 +29,20 @@ class VigenereCipher():
     
     def generate_encrypted_alphabet(self, key):
         encrypted_alphabets = []
-        letters = 
+        letter_sets = [] # Similar to a dictionary, contains modified key:value pairs (letter index in the alphabet and letter case)
+        letters = list(key)
+        for letter in letters:
+            letter_sets.append([self.alphabet.find(letter.upper()) + 1, "upper" if letter.isupper() else "lower" if letter.islower() else "non-alpha"])
+        for set in letter_sets:
+            new_alphabet = []
+            if set[1] == "upper":
+                # Generate the uppercase encrypted alphabet for this letter
+                pass
+            elif set[1] == "lower":
+                # Generate the lowercase encrypted alphabet for this letter
+                pass
+            else:
+                # Return an empty string
+                pass
+            encrypted_alphabets.append(new_alphabet)
+        return encrypted_alphabets
